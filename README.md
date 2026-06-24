@@ -22,8 +22,8 @@ def long_task(self, seconds: int = 90):
 ## 仕組み
 
 1. kombu の SQS transport は、受信メッセージの ReceiptHandle と Queue URL を `task.request.delivery_info`（`sqs_message` / `sqs_queue`）に格納する。
-2. これを用いて daemon thread が一定間隔で `ChangeMessageVisibility` を呼び、可視性を base ぶん延長する。
-3. プロセスが終了するとスレッドも停止し、最後の延長から最大 base 経過後に再配信される。
+2. これを用いて daemon thread が一定間隔（`HEARTBEAT_INTERVAL`）で `ChangeMessageVisibility` を呼び、可視性タイムアウトを `HEARTBEAT_EXTEND_BY` 秒に設定し直す。
+3. プロセスが終了するとスレッドも停止し、最後の設定から最大 `HEARTBEAT_EXTEND_BY` 秒後に再配信される。
 
 ## 前提設定
 

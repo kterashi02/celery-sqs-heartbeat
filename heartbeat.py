@@ -7,9 +7,9 @@ Celery + SQS(kombu) で処理時間が長いタスクを安全に処理するた
   1. kombu の SQS transport は、受信メッセージの ReceiptHandle と Queue URL を
      `task.request.delivery_info` に載せる（キー: sqs_message / sqs_queue）。
   2. それを使い、daemon thread から定期的に SQS の ChangeMessageVisibility を打って
-     可視性タイムアウトを base ぶん継ぎ足す（＝処理中は再配信されない）。
-  3. クラッシュ/強制 kill 時はこのスレッドもプロセス道連れで止まるため、延長が途絶え、
-     base 経過後に SQS が自動で再配信する。
+     可視性タイムアウトを extend_by 秒に設定し直す（＝処理中は再配信されない）。
+  3. クラッシュ/強制 kill 時はこのスレッドもプロセス道連れで止まるため延長が途絶え、
+     最後の設定から最大 extend_by 秒後に SQS が自動で再配信する。
 
 なぜ自前実装が必要か:
   kombu は in-flight メッセージの可視性を自動延長しない。よって処理中の延長は
