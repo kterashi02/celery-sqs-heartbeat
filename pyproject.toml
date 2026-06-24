@@ -1,0 +1,10 @@
+[project]
+name = "celery-sqs-heartbeat"
+version = "0.1.0"
+description = "Celery+SQS で Visibility Timeout を処理中に動的延長（ハートビート）する実装サンプル"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "celery[sqs]==5.3.6",   # sqs extra で pycurl + boto3 を導入（async SQS に必須）
+    "kombu==5.4.2",
+    "boto3==1.34.156",
+]
